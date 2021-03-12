@@ -87,6 +87,7 @@ if __name__ == '__main__':
     class LitModel(pl.LightningModule):
         def __init__(self):
             super(LitModel, self).__init__()
+            data = self.inputs
             self.conv1 = nn.Conv2d(3, 6, 5)
             self.pool = nn.MaxPool2d(2, 2)
             self.conv2 = nn.Conv2d(6, 16, 5)
@@ -117,9 +118,11 @@ if __name__ == '__main__':
           return optimizer
         
         def training_step(self, trainloader, dataiter):
+          for i, data in enumerate(trainloader, 0):
+            # get the inputs; data is a list of [inputs, labels]
+            inputs, labels = data
           dataiter = iter(trainloader)
-          print(next(dataiter))
-          images, labels = dataiter.next()
+          inputs, labels = data
           outputs = self(inputs)
           criterion = nn.CrossEntropyLoss()
           loss = criterion(outputs, labels)
